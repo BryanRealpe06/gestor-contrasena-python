@@ -1,0 +1,28 @@
+import hashlib  # Asegúrate de importar hashlib
+
+def cifrar_contraseña(contraseña):
+    return hashlib.sha256(contraseña.encode()).hexdigest()  # Convierte la contraseña en un hash seguro
+
+def verificar_contraseña(sitio, usuario, contraseña_ingresada):
+    contraseña_cifrada = cifrar_contraseña(contraseña_ingresada)  # Ahora sí está definida
+
+    try:
+        with open("contraseñas.txt", "r") as archivo:
+            for linea in archivo:
+                sitio_guardado, usuario_guardado, contraseña_guardada = linea.strip().split(" | ")
+                if sitio == sitio_guardado and usuario == usuario_guardado:
+                    if contraseña_cifrada == contraseña_guardada:
+                        return "✅ La contraseña es correcta."
+                    else:
+                        return "❌ La contraseña es incorrecta."
+        return "⚠️ No se encontró el usuario o sitio web."
+    except FileNotFoundError:
+        return "⚠️ No hay contraseñas guardadas aún."
+
+# Pedimos datos al usuario
+sitio = input("Nombre del sitio web: ")
+usuario = input("Nombre de usuario: ")
+contraseña_ingresada = input("Ingresa tu contraseña para verificar: ")
+
+resultado = verificar_contraseña(sitio, usuario, contraseña_ingresada)
+print(resultado)
